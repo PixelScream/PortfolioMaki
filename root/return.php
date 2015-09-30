@@ -34,27 +34,34 @@ function ArtPage($data) {
 	for($i = 0, $c = count($data); $i < $c; $i++) {
 
 		// Image, Title and Description
-		$pagetxt .= '<img src="/img/' . $data[$i]['url'] . '" ></br>';
+		$pagetxt .= '<img src="img/' . $data[$i]['url'] . '" ></br>';
 		$pagetxt .= '<h1>' . $data[$i]['title'] . '</h1></br>';
 		if(isset( $data[$i]['description'] ))
 			$pagetxt .= '<p>' . $data[$i]['description'] . '<p></br>';
-		
+		else 
+				$pagetxt .= '<p>No description<p></br>';
 
 		// Breakdown if applicable
 		if(isset( $data[$i]['breakdown'] )) {
+			$pagetxt .= '<p>' . $data[$i]['breakdown']['description'] . '<p></br>';
+
 			if(isset( $data[$i]['breakdown']['description'] ))
 				$pagetxt .= '<p>' . $data[$i]['breakdown']['description'] . '<p></br>';
 			else 
-				$pagetxt .= '<p>No description<p></br>';
+				$pagetxt .= '<p>No breakdown description<p></br>';
+
+			$pagetxt .= '<img src="img/' . $data[$i]['breakdown']['images']['one'] . '" ></br>';
 
 			if(isset( $data[$i]['breakdown']['images'] )) {
+				
 				foreach ($data[$i]['breakdown']['images']  as $breakdownKey => $breakdownValue) {
-					$pagetxt .= '<img src="/img/' . $breakdownValue . '" ></br>';
+					$pagetxt .= '<img src="img/' . $breakdownValue . '" ></br>';
 				}
 			}
-			else 
-				$pagetxt .= '<p>No break down<p></br>';
 
+		}
+		else {
+			$pagetxt .= '<p>No break down<p></br>';
 		}
 
 	}

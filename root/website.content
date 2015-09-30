@@ -6,13 +6,19 @@
         },
         {
           "title"         : "Render 2",
-          "url"           : "render_002.jpg",
-          "description"   : "Morbi eu nunc consectetur, dictum orci et, venenatis quam. Morbi porta porta tincidunt."
+          "url"           : "render_002.jpg"
         },
         {
           "title"         : "Render 3",
            "url"          : "render_003.jpg",
-           "description"  : "Nam convallis dapibus egestas. Nunc viverra efficitur justo."
+           "description"  : "Nam convallis dapibus egestas. Nunc viverra efficitur justo.",
+           "breakdown"    :[{
+                              "description" : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris in accumsan risus.",
+                              "images"  :[{
+                                            "one" : "render_003_wireframe.jpg",
+                                            "two" : "render_003_technical.jpg"
+                                        }]
+                          }]
         }],
 "info"  :{
         "name"        : "Dickie McCarthy",

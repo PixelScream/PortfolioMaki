@@ -1,0 +1,38 @@
+diff a/root/build.php b/root/build.php	(rejected hunks)
+@@ -48,20 +48,22 @@
+     var xmlHttp = new XMLHttpRequest;
+     xmlHttp.open('get', 'return.php', true);
+     xmlHttp.send(null);
+-    xmlHttp.onreadystatechange = function() {
+-      if (xmlHttp.readyState === 4) {
+-        if (xmlHttp.status === 200) {
+-        	console.log(xmlHttp.responseText);
+-          //success.call(null, xmlHttp.responseText);
+-          messageBox.innerHTML = xmlHttp.responseText;
+-          ToggleMessageBox();
+-        } else {
+-          error.call(null, xmlHttp.responseText);
+-        }
+-      } else {
+-        //still processing
+-      }
+-    };
++
++    while(true)
++   {
++    xmlHttp.onreadystatechange=function() //listens to the state chnages
++   {
++    if(xmlHttp.readyState==3) //if its still loading
++     {
++      messageBox.innerHTML += xmlHttp.responseText;
++      //eval(xmlHttp.responseText);
++     }
++   }
++
++    if(xmlHttp.readyState==4) { eval(xmlHttp.responseText);} break; //finished loading get out of for loop
++   }
++
++
+   }
+   getData();
+ 

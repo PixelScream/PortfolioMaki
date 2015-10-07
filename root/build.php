@@ -48,6 +48,11 @@
     var xmlHttp = new XMLHttpRequest;
     xmlHttp.open('get', 'return.php', true);
     xmlHttp.send(null);
+          messageBox.innerHTML = xmlHttp.responseText;
+
+   xmlHttp.onerror = function(e) {
+      console.log(e.error);
+   }
 
     while(true)
    {
@@ -59,8 +64,10 @@
       //eval(xmlHttp.responseText);
      }
    }
-
-    if(xmlHttp.readyState==4) { eval(xmlHttp.responseText);} break; //finished loading get out of for loop
+    if(xmlHttp.readyState==4) { 
+      eval(xmlHttp.responseText);
+      ToggleMessageBox();
+      } break; //finished loading get out of for loop
    }
 
 

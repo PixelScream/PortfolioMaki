@@ -8,20 +8,22 @@ ob_implicit_flush(1);
 
 $startTime = date("h:i:sa");
 
+$errors = '';
+
 ////////
 // Website Template shiz
 ////////
 $templateHeader = 
 '<!DOCTYPE html>
 <html><head><meta charset="UTF-8">
-<title>Title of the document</title>
+<title>%1$s</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head><body><div id="content-wrapper">';
+</head><body>';
 $templateFooter = '</div></body></html>';
-$txt = "";
+$txt = '<div id="content-wrapper">';
 $templateNav = array('<nav>', '', '</nav>');
-
+$name = '';
 ////////
 // Website content JSON decode
 ////////
@@ -73,14 +75,25 @@ function ArtPage($data) {
 		}
 
 	}
-	echo $pagetxt;
+	//echo $pagetxt;
 	return $pagetxt;
 }
 
+
+function InfoPage($data) {
+	$pagetxt = '';
+
+	if(isset($data[1]['name'])){
+		$name = $data[1]['name'];
+		$pagetxt .= '<h1>' . $name . '</h1>';
+	}
+
+}
+
 ////////
-// Format JSON
+// Strip data from JSON
 ////////
-$txt .= ArtPage($results['art']);
+
 /*
 foreach ($results['art'] as $key=>$value) {
 	foreach ($value as $subkey => $subvalue) {
@@ -90,32 +103,55 @@ foreach ($results['art'] as $key=>$value) {
 	}
 }
 */
+
+// Loop each Array, handle each type with a type specific function
 foreach ($results as $key=>$value) {
 	$templateNav[1] .= '<a href="#">' .  $value[0]['label'] . '</a>';
+
+	if ($value[0]['type'] == 'art') {
+		$txt .= ArtPage($value);
+	} elseif ($value[0]['type'] == 'info') {
+		$txt .= InfoPage($value);
+	} 
 }
-echo $templateNav[0] . $templateNav[1] . $templateNav[2];
+
+
+
+
+
 
 
 ////////
-// Write web page
-////////
-$myfile = "index.html";
+// Format content////////
 
-$buildTimeStamp = '<!--This build was completed ' . date("h:i:sa") . '-->';
+if($errors == '') {
 
-$websiteContent = $templateHeader . $templateNav[0] . $templateNav[1] . $templateNav[2] . $txt . $buildTimeStamp . $templateFooter;
-file_put_contents($myfile, $websiteContent, LOCK_EX );
-/*
-$myfile = fopen("index.html", "w") or die("Unable to open file!");
-fwrite($myfile, $templateHeader);
-fwrite($myfile, $txt);
-fwrite($myfile, $templateFooter);
-fclose($myfile);
-*/
-sleep(3);
+	// print build page
+	echo $templateNav[0] . $templateNav[1] . $templateNav[2];
+	echo $txt;
 
-$endTime = date("h:i:sa");
-//echo $results;
 
-echo "\n started " . $startTime . ", finished " . $endTime;
+	$templateHeader  = sprintf($templateHeader, $name . ' | Artist Portfolio');
+
+	// add html time stamp
+	$buildTimeStamp = '<!--This build was completed ' . date("h:i:sa") . '-->';
+
+	// smush all the content into one long string
+	$websiteContent = $templateHeader . $templateNav[0] . $templateNav[1] . $templateNav[2] . $txt . $buildTimeStamp . $templateFooter;
+
+
+	////////
+	// Write web page
+	////////
+	$myfile = "index.html";
+	file_put_contents($myfile, $websiteContent, LOCK_EX );
+
+
+	//sleep(3);
+
+	$endTime = date("h:i:sa");
+	echo "\n started " . $startTime . ", finished " . $endTime;
+} else {
+	echo $errors;
+}
 ?>

@@ -1,4 +1,11 @@
 <?php
+
+@ini_set('zlib.output_compression',0);
+@ini_set('implicit_flush',1);
+@ob_end_clean();
+
+ob_implicit_flush(1);
+
 $startTime = date("h:i:sa");
 
 ////////
@@ -9,9 +16,11 @@ $templateHeader =
 <html><head><meta charset="UTF-8">
 <title>Title of the document</title>
 <link rel="stylesheet" type="text/css" href="css/style.css">
-</head><body>';
-$templateFooter = '</body></html>';
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head><body><div id="content-wrapper">';
+$templateFooter = '</div></body></html>';
 $txt = "";
+$templateNav = array('<nav>', '', '</nav>');
 
 ////////
 // Website content JSON decode
@@ -31,7 +40,7 @@ function ArtPage($data) {
 	$pagetxt = "";
 
 	// loop through all art peices 
-	for($i = 0, $c = count($data); $i < $c; $i++) {
+	for($i = 1, $c = count($data); $i < $c; $i++) {
 
 		// Image, Title and Description
 		$pagetxt .= '<img src="img/' . $data[$i]['url'] . '" ></br>';
@@ -50,7 +59,6 @@ function ArtPage($data) {
 			else 
 				$pagetxt .= '<p>No breakdown description<p></br>';
 
-			$pagetxt .= '<img src="img/' . $data[$i]['breakdown']['images']['one'] . '" ></br>';
 
 			if(isset( $data[$i]['breakdown']['images'] )) {
 				
@@ -82,6 +90,11 @@ foreach ($results['art'] as $key=>$value) {
 	}
 }
 */
+foreach ($results as $key=>$value) {
+	$templateNav[1] .= '<a href="#">' .  $value[0]['label'] . '</a>';
+}
+echo $templateNav[0] . $templateNav[1] . $templateNav[2];
+
 
 ////////
 // Write web page
@@ -89,7 +102,9 @@ foreach ($results['art'] as $key=>$value) {
 $myfile = "index.html";
 
 $buildTimeStamp = '<!--This build was completed ' . date("h:i:sa") . '-->';
-file_put_contents($myfile, $templateHeader . $txt . $buildTimeStamp . $templateFooter, LOCK_EX );
+
+$websiteContent = $templateHeader . $templateNav[0] . $templateNav[1] . $templateNav[2] . $txt . $buildTimeStamp . $templateFooter;
+file_put_contents($myfile, $websiteContent, LOCK_EX );
 /*
 $myfile = fopen("index.html", "w") or die("Unable to open file!");
 fwrite($myfile, $templateHeader);
